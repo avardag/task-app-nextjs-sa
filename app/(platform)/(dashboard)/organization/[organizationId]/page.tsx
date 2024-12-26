@@ -1,8 +1,20 @@
-import { auth } from "@clerk/nextjs/server";
+import prisma from "@/lib/db";
+import Board from "./_components/board";
+import Form from "./_components/form";
+// import { auth } from "@clerk/nextjs/server";
 
-function OrganizationPage() {
-  const { orgId } = auth();
-  return <div>Organization {orgId}</div>;
+async function OrganizationIdPage() {
+  const boards = await prisma.board.findMany();
+  return (
+    <div className="flex flex-col space-y-4;">
+      <Form />
+      <div className="space-y-2">
+        {boards.map((board) => (
+          <Board key={board.id} id={board.id} title={board.title} />
+        ))}
+      </div>
+    </div>
+  );
 }
 
-export default OrganizationPage;
+export default OrganizationIdPage;
