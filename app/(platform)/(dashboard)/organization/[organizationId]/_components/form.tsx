@@ -2,8 +2,8 @@
 
 import { createBoard } from "@/app/actions/createBoard";
 import { useAction } from "@/app/hooks/useAction";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { FormInput } from "@/components/form/FormInput";
+import { FormSubmit } from "@/components/form/FormSubmit";
 
 export default function Form() {
   // const initialState = { message: null, errors: {} };
@@ -22,23 +22,24 @@ export default function Form() {
   return (
     <form action={onSubmit}>
       <div className="flex flex-col space-y-2">
-        <Input
-          id="title"
-          name="title"
-          required
-          placeholder="Enter a board title"
-          disabled={isLoading}
-        />
-        {fieldErrors?.title ? (
-          <div>
-            {fieldErrors?.title.map((error) => (
-              <p key={error} className="text-red-400">
-                {error}
-              </p>
-            ))}
-          </div>
-        ) : null}
-        <Button disabled={isLoading}>Submit</Button>
+        {/* <Input */}
+        {/*   id="title" */}
+        {/*   name="title" */}
+        {/*   required */}
+        {/*   placeholder="Enter a board title" */}
+        {/*   disabled={isLoading} */}
+        {/* /> */}
+        {/* {fieldErrors?.title ? ( */}
+        {/*   <div> */}
+        {/*     {fieldErrors?.title.map((error) => ( */}
+        {/*       <p key={error} className="text-red-400"> */}
+        {/*         {error} */}
+        {/*       </p> */}
+        {/*     ))} */}
+        {/*   </div> */}
+        {/* ) : null} */}
+        <FormInput id="title" label="Board title" errors={fieldErrors} />
+        <FormSubmit>Save</FormSubmit>
       </div>
     </form>
   );

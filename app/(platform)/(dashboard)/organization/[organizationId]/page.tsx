@@ -1,17 +1,15 @@
-import prisma from "@/lib/db";
-import Board from "./_components/board";
-import Form from "./_components/form";
+import { Separator } from "@/components/ui/separator";
+import { Info } from "./_components/info";
+import { BoardList } from "./_components/boardList";
 // import { auth } from "@clerk/nextjs/server";
 
 async function OrganizationIdPage() {
-  const boards = await prisma.board.findMany();
   return (
     <div className="flex flex-col space-y-4;">
-      <Form />
-      <div className="space-y-2">
-        {boards.map((board) => (
-          <Board key={board.id} id={board.id} title={board.title} />
-        ))}
+      <Info />
+      <Separator className="my-4" />
+      <div className="px-2 md:px-4">
+        <BoardList />
       </div>
     </div>
   );
