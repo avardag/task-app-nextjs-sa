@@ -9,21 +9,41 @@ import { createSafeAction } from "@/lib/createSafeAction";
 import CreateBoardSchema from "./schema";
 
 async function createHandler(data: InputType): Promise<ReturnType> {
-  const { userId } = auth();
+  const { userId, orgId } = auth();
 
-  if (!userId) {
+  if (!userId || !orgId) {
     return {
       error: "Unauthorized",
     };
   }
 
-  const { title } = data;
+  const { title, image } = data;
 
+  const [imageId, imageThumbUrl, imageFullUrl, imageLinkHtml, imageUserName] =
+    image.split("|");
+
+  if (
+    !imageId ||
+    !imageThumbUrl ||
+    !imageFullUrl ||
+    !imageLinkHtml ||
+    !imageUserName
+  ) {
+    return { error: "Missing fields. Failed to create Board" };
+  }
   let board;
 
   try {
     board = await prisma.board.create({
-      data: { title },
+      data: {
+        title,
+        orgId,
+        imageFullUrl,
+        imageThumbUrl,
+        imageId,
+        imageLinkHtml,
+        imageUserName,
+      },
     });
   } catch (error) {
     return {

@@ -39,7 +39,7 @@ export default function Form() {
         {/*   </div> */}
         {/* ) : null} */}
         <FormInput id="title" label="Board title" errors={fieldErrors} />
-        <FormSubmit>Save</FormSubmit>
+        <FormSubmit disabled={isLoading}>Save</FormSubmit>
       </div>
     </form>
   );
