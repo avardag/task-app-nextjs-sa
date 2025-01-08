@@ -1,15 +1,19 @@
-"use client";
-
 import { updateList } from "@/app/actions/updateList";
 import { useAction } from "@/app/hooks/useAction";
 import { FormInput } from "@/components/form/FormInput";
 import { List } from "@prisma/client";
 import { useState, useRef, ElementRef } from "react";
 import { toast } from "sonner";
-import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import { useEventListener } from "usehooks-ts";
 import ListOptions from "./ListOptions";
 
-export default function ListHeader({ data }: { data: List }) {
+export default function ListHeader({
+  data,
+  onAddCard,
+}: {
+  data: List;
+  onAddCard: () => void;
+}) {
   const [title, setTitle] = useState(data.title);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -28,7 +32,7 @@ export default function ListHeader({ data }: { data: List }) {
     setIsEditing(false);
   };
 
-  const { execute, fieldErrors } = useAction(updateList, {
+  const { execute } = useAction(updateList, {
     onSuccess: (data) => {
       toast.success(`Renamed to "${data.title}"`);
       setTitle(data.title);
@@ -87,7 +91,7 @@ export default function ListHeader({ data }: { data: List }) {
           {title}
         </div>
       )}
-      <ListOptions onAddCard={() => {}} data={data} />
+      <ListOptions onAddCard={onAddCard} data={data} />
     </div>
   );
 }
