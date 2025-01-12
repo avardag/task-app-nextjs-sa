@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { CardWithList } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import Header from "./Header";
+import Description from "./Description";
 
 export default function CardModal() {
   const id = useCardModal((state) => state.id);
@@ -22,8 +23,19 @@ export default function CardModal() {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogTitle>Card</DialogTitle>
       {/* <DialogTrigger>Open</DialogTrigger> */}
-      <DialogContent className="bg-slate-200">
+      <DialogContent className="bg-white">
         {cardData ? <Header data={cardData} /> : <Header.Skeleton />}
+        <div className="grid grid-cols-1 md:grid-cols-4 md:gap-4">
+          <div className="col-span-3">
+            <div className="w-full space-y-6">
+              {cardData ? (
+                <Description data={cardData} />
+              ) : (
+                <Description.Skeleton />
+              )}
+            </div>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

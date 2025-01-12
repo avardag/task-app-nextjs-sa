@@ -1,4 +1,6 @@
 "use client";
+import { updateCard } from "@/app/actions/updateCard";
+import { useAction } from "@/app/hooks/useAction";
 import { FormInput } from "@/components/form/FormInput";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CardWithList } from "@/types";
@@ -6,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { LayoutIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useRef, useState, ElementRef } from "react";
+import { toast } from "sonner";
 
 export default function Header({ data }: { data: CardWithList }) {
   const queryClient = useQueryClient();
@@ -15,12 +18,30 @@ export default function Header({ data }: { data: CardWithList }) {
 
   const [title, setTitle] = useState(data.title);
 
+  const { execute } = useAction(updateCard, {
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["card", data.id],
+      });
+      setTitle(data.title);
+      toast.success(`Card renamed to "${data.title}"`);
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+
   const onBlur = () => {
     inputRef.current?.form?.requestSubmit();
   };
 
   const onSubmit = (formData: FormData) => {
-    console.log(formData.get("title"));
+    const title = formData.get("title") as string;
+    const boardId = params.boardId as string;
+
+    if (title === data.title) return;
+
+    execute({ title, id: data.id, boardId });
   };
   return (
     <div className="flex items-center gap-x-3 mb-6 w-full">
