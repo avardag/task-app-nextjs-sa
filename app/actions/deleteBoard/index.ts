@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/createSafeAction";
 import DeleteBoardSchema from "./schema";
 import { redirect } from "next/navigation";
+import { createAuditLog } from "@/lib/createAuditLog";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 async function deleteHandler(data: InputType): Promise<ReturnType> {
   const { userId, orgId } = auth();
@@ -20,11 +22,18 @@ async function deleteHandler(data: InputType): Promise<ReturnType> {
   const { id } = data;
 
   try {
-    await prisma.board.delete({
+    const board = await prisma.board.delete({
       where: {
         id,
         orgId,
       },
+    });
+    //create log
+    await createAuditLog({
+      entityId: board.id,
+      entityTitle: board.title,
+      entityType: ENTITY_TYPE.BOARD,
+      action: ACTION.DELETE,
     });
   } catch (error) {
     return {

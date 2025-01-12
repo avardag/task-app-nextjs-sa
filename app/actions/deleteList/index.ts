@@ -6,6 +6,8 @@ import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/createSafeAction";
 import DeleteListSchema from "./schema";
+import { createAuditLog } from "@/lib/createAuditLog";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 async function deleteHandler(data: InputType): Promise<ReturnType> {
   const { userId, orgId } = auth();
@@ -26,6 +28,13 @@ async function deleteHandler(data: InputType): Promise<ReturnType> {
         boardId,
         board: { orgId },
       },
+    });
+    //create log
+    await createAuditLog({
+      entityId: list.id,
+      entityTitle: list.title,
+      entityType: ENTITY_TYPE.LIST,
+      action: ACTION.DELETE,
     });
   } catch (error) {
     return {

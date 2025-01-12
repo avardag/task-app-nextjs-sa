@@ -23,6 +23,9 @@ export default function Header({ data }: { data: CardWithList }) {
       queryClient.invalidateQueries({
         queryKey: ["card", data.id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["card-logs", data.id],
+      });
       setTitle(data.title);
       toast.success(`Card renamed to "${data.title}"`);
     },

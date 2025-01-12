@@ -6,6 +6,8 @@ import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/createSafeAction";
 import CreateListSchema from "./schema";
 import { InputType, ReturnType } from "./types";
+import { createAuditLog } from "@/lib/createAuditLog";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 async function createListHandler(data: InputType): Promise<ReturnType> {
   const { userId, orgId } = auth();
@@ -47,6 +49,13 @@ async function createListHandler(data: InputType): Promise<ReturnType> {
         boardId,
         order: newOrder,
       },
+    });
+    //create log
+    await createAuditLog({
+      entityId: list.id,
+      entityTitle: list.title,
+      entityType: ENTITY_TYPE.LIST,
+      action: ACTION.CREATE,
     });
   } catch (error) {
     return {
